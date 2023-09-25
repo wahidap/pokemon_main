@@ -1,5 +1,7 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:app/modules/home/home_page_store.dart';
+import 'package:app/modules/items/items_page.dart';
+import 'package:app/modules/pokemon_grid/pokemon_grid_page.dart';
 import 'package:app/shared/stores/item_store/item_store.dart';
 import 'package:app/shared/stores/pokemon_store/pokemon_store.dart';
 import 'package:app/shared/ui/widgets/app_bar.dart';
@@ -131,18 +133,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  // Observer(
-                  //   builder: (_) {
-                  //     switch (_homeStore.page) {
-                  //       case HomePageType.POKEMON_GRID:
-                  //         return PokemonGridPage();
-                  //       case HomePageType.ITENS:
-                  //         return ItemsPage();
-                  //       default:
-                  //         return PokemonGridPage();
-                  //     }
-                  //   },
-                  // ),
+                  Observer(
+                    builder: (_) {
+                      switch (_homeStore.page) {
+                        case HomePageType.POKEMON_GRID:
+                          return PokemonGridPage();
+                        case HomePageType.ITENS:
+                          return ItemsPage();
+                        default:
+                          return PokemonGridPage();
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
