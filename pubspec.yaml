@@ -27,6 +27,8 @@ dependencies:
   audio_video_progress_bar: ^2.0.0
 
 dev_dependencies:
+  mockito:
+  build_runner:
   flutter_test:
     sdk: flutter
 
@@ -49,3 +51,4 @@ flutter:
     - assets/images/pokemons_generations/generation_7/
     - assets/images/pokemons_generations/generation_8/
     - assets/lotties/
+    - assets/images/pokemons_types/20/water.png
