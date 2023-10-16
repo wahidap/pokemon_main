@@ -113,6 +113,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return ThemeSwitchingArea(
       child: Builder(builder: (context) {
         return Scaffold(
+          key: const Key('home_page'),
           backgroundColor: Theme.of(context).colorScheme.background,
           endDrawer: const Drawer(
             child: DrawerMenuWidget(),

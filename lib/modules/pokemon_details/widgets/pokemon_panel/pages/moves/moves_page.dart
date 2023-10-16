@@ -184,7 +184,7 @@ class _MovesPageState extends State<MovesPage>
               );
             },
           ),
-          SizedBox(
+          const SizedBox(
             height: 100,
           )
         ],
