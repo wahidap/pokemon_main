@@ -1,3 +1,4 @@
+
 import 'package:app/modules/home/home_page.dart';
 import 'package:app/modules/login/bloc/bloc/login_bloc.dart';
 import 'package:app/modules/reset_password/forgot_password.dart';
@@ -74,6 +75,7 @@ class LoginPage extends StatelessWidget {
                                 labelStyle: TextStyle(
                                     color: Colors.red), // Set label text color
                                 hintText: "Enter your email id",
+                              
                                 suffixIcon: Container(
                                   // Wrap the Icon with a Container
                                   child: Icon(
@@ -103,6 +105,7 @@ class LoginPage extends StatelessWidget {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.always,
                               ),
+                             
                             ),
                           ),
                           SizedBox(
@@ -160,7 +163,14 @@ class LoginPage extends StatelessWidget {
                                 builder: (context, state) {
                                   return TextButton(
                                     onPressed: () {
-                                      ;
+                                       if(_emailController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter an email')));
+                                        }
+                                        else  if(_passwordController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter a password')));
+                                        }
                                       if (_emailController.text.isEmpty &&
                                           _emailController.text.isEmpty) {
                                         ScaffoldMessenger.of(context)

@@ -10,6 +10,7 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
     on<ResetPasswordEvent>((event, emit) async  {
     if(event is ResertUserPassword){
 Map<String,dynamic> newpasswordData = {
+  'registered email':event.regEmail,
   'new password':event.newpassword,
   'confirmed password':event.confirmPassword
 };

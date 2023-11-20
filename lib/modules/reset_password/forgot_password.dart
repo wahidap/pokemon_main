@@ -9,6 +9,7 @@ class ForgotPassword extends StatelessWidget {
   ForgotPassword({super.key});
   TextEditingController _newPasswordController = TextEditingController();
   TextEditingController _rePasswordController = TextEditingController();
+    TextEditingController _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +68,47 @@ class ForgotPassword extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: TextFormField(
+                            controller: _emailController,
+                            obscureText: true,
+                            style: TextStyle(fontSize: 12),
+                            decoration: InputDecoration(
+                              labelText: "Registered email address",
+                              labelStyle: TextStyle(
+                                  color: Colors.red), // Set label text color
+                              hintText: "Enter your registered email address",
+                              suffixIcon: Container(
+                                // Wrap the Icon with a Container
+                                child: Icon(
+                                  Icons.email_outlined,
+                                  color: Color.fromARGB(255, 101, 101,
+                                      101), // Set the desired icon color
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 1.0,
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 16,
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10,top: 10),
                           child: TextFormField(
                             controller: _newPasswordController,
                             obscureText: true,
@@ -158,7 +200,24 @@ class ForgotPassword extends StatelessWidget {
                               builder: (context, state) {
                                 return TextButton(
                                   onPressed: () {
+                                     if(_newPasswordController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter a password')));
+                                        }
+                                        else  if(_emailController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter the registered email')));
+                                        }
+                                        else  if(_rePasswordController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter the password')));
+                                        }
+                                        else  if((_newPasswordController.text) != (_rePasswordController.text)){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Both passwords are not same')));
+                                        }
                                    context.read<ResetPasswordBloc>().add(ResertUserPassword(
+                                    regEmail: _emailController.text,
                                     newpassword: _newPasswordController.text, 
                                     confirmPassword: _rePasswordController.text));
                                   },

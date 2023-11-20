@@ -301,6 +301,26 @@ class SignupPage extends StatelessWidget {
                                     return TextButton(
                                       onPressed: () {
                                         print('welcome');
+                                        if(_userNameController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter a username')));
+                                        }
+                                        else if(_userMobileController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter a 10 digit mobile number')));
+                                        }
+                                       else if(_userEmailController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter an email address')));
+                                        }
+                                        else if(_userPasswordController.text.isEmpty){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Please enter a password')));
+                                        }
+                                        else if((_userPasswordController.text)!= (_userRePasswordController.text)){
+                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Both passwords are not same')));
+                                        }
 
                                         context.read<SignupBloc>().add(
                                               SignupUser(
