@@ -1,3 +1,4 @@
+import 'package:app/modules/emailOtp/emailOtp_page.dart';
 import 'package:app/modules/login/bloc/bloc/login_bloc.dart';
 import 'package:app/modules/login/login_page.dart';
 import 'package:app/modules/reset_password/bloc/bloc/reset_password_bloc.dart';
@@ -7,8 +8,7 @@ import 'package:lottie/lottie.dart';
 
 class ForgotPassword extends StatelessWidget {
   ForgotPassword({super.key});
-  TextEditingController _newPasswordController = TextEditingController();
-  TextEditingController _rePasswordController = TextEditingController();
+
     TextEditingController _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -21,17 +21,30 @@ class ForgotPassword extends StatelessWidget {
         create: (context) => ResetPasswordBloc(),
         child: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
           listener: (context, state) {
-            if (state is ResetPasswordSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Password reset completed successfully')));
-              Navigator.push(
+          if(state is OtpSent){
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.green,
+                  content:
+                      Center(child: Text('OTP has been sent to your registered email.')),
+                ),
+            );
+             Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(
+                  builder: (context) => OtpPage()
+                ),
               );
-            }
-            if (state is ResetPasswordFailed) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Password reset failed. Please try afain.')));
+          }
+          
+                 if(state is EmailNotFound){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content:
+                      Center(child: Text('Email not found')),
+                ),
+              );
             }
           },
           builder: (context, state) {
@@ -70,7 +83,7 @@ class ForgotPassword extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10, right: 10),
                           child: TextFormField(
                             controller: _emailController,
-                            obscureText: true,
+                           
                             style: TextStyle(fontSize: 12),
                             decoration: InputDecoration(
                               labelText: "Registered email address",
@@ -107,92 +120,9 @@ class ForgotPassword extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10,top: 10),
-                          child: TextFormField(
-                            controller: _newPasswordController,
-                            obscureText: true,
-                            style: TextStyle(fontSize: 12),
-                            decoration: InputDecoration(
-                              labelText: "New Password",
-                              labelStyle: TextStyle(
-                                  color: Colors.red), // Set label text color
-                              hintText: "Enter your password",
-                              suffixIcon: Container(
-                                // Wrap the Icon with a Container
-                                child: Icon(
-                                  Icons.lock_reset_outlined,
-                                  color: Color.fromARGB(255, 101, 101,
-                                      101), // Set the desired icon color
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 1.0,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 1.0,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 16,
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 20, left: 10, right: 10),
-                          child: TextFormField(
-                            controller: _rePasswordController,
-                            obscureText: true,
-                            style: TextStyle(fontSize: 12),
-                            decoration: InputDecoration(
-                              labelText: "Confirm Password",
-                              labelStyle: TextStyle(
-                                  color: Colors.red), // Set label text color
-                              hintText: "Enter your Password",
-                              suffixIcon: Container(
-                                // Wrap the Icon with a Container
-                                child: Icon(
-                                  Icons.lock_reset_outlined,
-                                  color: Color.fromARGB(255, 101, 101,
-                                      101), // Set the desired icon color
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 1.0,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 1.0,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 16,
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        ),
+                       SizedBox(
+                        height: 30,
+                       ),
                         Container(
                           child: SizedBox(
                             width: 150,
@@ -200,26 +130,20 @@ class ForgotPassword extends StatelessWidget {
                               builder: (context, state) {
                                 return TextButton(
                                   onPressed: () {
-                                     if(_newPasswordController.text.isEmpty){
-                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please enter a password')));
-                                        }
-                                        else  if(_emailController.text.isEmpty){
-                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please enter the registered email')));
-                                        }
-                                        else  if(_rePasswordController.text.isEmpty){
-                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please enter the password')));
-                                        }
-                                        else  if((_newPasswordController.text) != (_rePasswordController.text)){
-                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Both passwords are not same')));
-                                        }
-                                   context.read<ResetPasswordBloc>().add(ResertUserPassword(
+                                   
+                                     if(_emailController.text.isEmpty){
+                                       ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                
+                  content:
+                      Center(child: Text('Enter your registered email.')),
+                ),
+            );
+                                     }
+                                   context.read<ResetPasswordBloc>().add(SubmitEnteredEmail(
                                     regEmail: _emailController.text,
-                                    newpassword: _newPasswordController.text, 
-                                    confirmPassword: _rePasswordController.text));
+                                    
+                                 ));
                                   },
                                   style: TextButton.styleFrom(
                                     backgroundColor:

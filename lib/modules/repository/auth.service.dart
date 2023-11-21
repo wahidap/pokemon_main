@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import '../../../apis.dart';
 
 class AuthService {
@@ -37,33 +39,66 @@ class AuthService {
   // }
 
   Future<dynamic> userLogin(dynamic credentials) async {
-   try {
+    try {
       dynamic response = await http.post(Uri.parse('$baseUrl/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(credentials));
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(credentials));
 
-    dynamic responseObj = json.decode(response.body);
-    print('login responseeeeeeee isssss $responseObj');
-    return responseObj;
-   } catch (e) {
-     print(e);
-      print('ERRROORRR');
-   }
-  }
-
-
-  Future<dynamic> resetPassword(dynamic newPasswordCredentials) async {
-   try {
-      dynamic response = await http.post(Uri.parse('$baseUrl/resetPassword'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(newPasswordCredentials));
-    dynamic responseObj = json.decode(response.body);
-    print('RESET RESPONSEEEEEEE $responseObj');
-    return responseObj;
-   } catch (e) {
+      dynamic responseObj = json.decode(response.body);
+      print('login responseeeeeeee isssss $responseObj');
+      return responseObj;
+    } catch (e) {
       print(e);
       print('ERRROORRR');
-   }
+    }
+  }
+
+  Future<dynamic> resetPassword(dynamic newPasswordCredentials) async {
+    try {
+      print('data isssssss $newPasswordCredentials');
+      dynamic response = await http.post(Uri.parse('$baseUrl/resetPassword'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(newPasswordCredentials));
+      dynamic responseObj = json.decode(response.body);
+      print('RESET RESPONSEEEEEEE $responseObj');
+      return responseObj;
+    } catch (e) {
+      print(e);
+      print('ERRROORRR');
+    }
+  }
+
+  Future<dynamic> sendOtpForPasswordReset(String credentials) async {
+    try {
+      print(credentials);
+      dynamic response = await http.get(
+        Uri.parse('$baseUrl/resetPassword/check-email?email=$credentials'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      dynamic responseObj = json.decode(response.body);
+
+      return responseObj;
+    } catch (e) {}
+  }
+    sendOtpToUser(String email, String emailSubject, String emailBody) async {
+   
+    String emailId = 'ammu@gmail.com';
+    String password = 'zsfzxdf';
+    final smtpServer = gmail(emailId, password);
+
+    final message = Message()
+      ..from = Address(emailId)
+      ..recipients.add(email) // Recipient's email address
+      ..subject = emailSubject
+      ..text = emailBody;
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('email is sent');
+      // print('Message sent: ${sendReport.sent}');
+    } catch (error, stackTrace) {
+      print('Error sending email: $error');
+      print('Stack Trace: $stackTrace');
+    }
   }
 
   //  Future<dynamic> resendOtp(dynamic credentials) async {

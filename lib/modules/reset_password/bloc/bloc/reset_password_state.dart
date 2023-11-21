@@ -4,5 +4,5 @@ part of 'reset_password_bloc.dart';
 sealed class ResetPasswordState {}
 
 final class ResetPasswordInitial extends ResetPasswordState {}
-final class ResetPasswordSuccess extends ResetPasswordState {}
-final class ResetPasswordFailed extends ResetPasswordState {}
+final class OtpSent extends ResetPasswordState {}
+final class EmailNotFound extends ResetPasswordState {}
