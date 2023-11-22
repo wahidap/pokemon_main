@@ -1,7 +1,7 @@
 
+import 'package:app/modules/forgot_password/forgot_password.dart';
 import 'package:app/modules/home/home_page.dart';
 import 'package:app/modules/login/bloc/bloc/login_bloc.dart';
-import 'package:app/modules/reset_password/forgot_password.dart';
 import 'package:app/modules/signup/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

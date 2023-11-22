@@ -1,7 +1,7 @@
 import 'package:app/modules/emailOtp/emailOtp_page.dart';
-import 'package:app/modules/login/bloc/bloc/login_bloc.dart';
-import 'package:app/modules/login/login_page.dart';
-import 'package:app/modules/reset_password/bloc/bloc/reset_password_bloc.dart';
+import 'package:app/modules/forgot_password/bloc/bloc/forgot_password_bloc.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -18,8 +18,8 @@ class ForgotPassword extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: BlocProvider(
-        create: (context) => ResetPasswordBloc(),
-        child: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
+        create: (context) => ForgotPasswordBloc(),
+        child: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
           listener: (context, state) {
           if(state is OtpSent){
             ScaffoldMessenger.of(context).showSnackBar(
@@ -32,7 +32,9 @@ class ForgotPassword extends StatelessWidget {
              Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => OtpPage()
+                  builder: (context) => OtpPage(
+                    typedOtp: state.emailOtp,
+                  )
                 ),
               );
           }
@@ -126,7 +128,7 @@ class ForgotPassword extends StatelessWidget {
                         Container(
                           child: SizedBox(
                             width: 150,
-                            child: BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
+                            child: BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
                               builder: (context, state) {
                                 return TextButton(
                                   onPressed: () {
@@ -140,7 +142,7 @@ class ForgotPassword extends StatelessWidget {
                 ),
             );
                                      }
-                                   context.read<ResetPasswordBloc>().add(SubmitEnteredEmail(
+                                   context.read<ForgotPasswordBloc>().add(SubmitEnteredEmail(
                                     regEmail: _emailController.text,
                                     
                                  ));

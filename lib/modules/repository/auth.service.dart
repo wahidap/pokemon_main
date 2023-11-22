@@ -28,15 +28,15 @@ class AuthService {
     }
   }
 
-  //  Future<dynamic> verifyOtp(dynamic credentials) async {
-  //   dynamic response = await http.post(
-  //     Uri.parse('$baseUrl/signup/verify-email'),
-  //     headers: {'Content-Type': 'application/json'},
-  //       body: json.encode(credentials)
-  //   );
-  //    dynamic responseObj = json.decode(response.body);
-  //   return responseObj;
-  // }
+   Future<dynamic> verifyOtp(dynamic credentials) async {
+    dynamic response = await http.post(
+      Uri.parse('$baseUrl/verify-email'),
+      headers: {'Content-Type': 'application/json'},
+        body: json.encode(credentials)
+    );
+     dynamic responseObj = json.decode(response.body);
+    return responseObj;
+  }
 
   Future<dynamic> userLogin(dynamic credentials) async {
     try {
@@ -70,20 +70,22 @@ class AuthService {
 
   Future<dynamic> sendOtpForPasswordReset(String credentials) async {
     try {
-      print(credentials);
+      print('aakkkakkaka $credentials');
       dynamic response = await http.get(
-        Uri.parse('$baseUrl/resetPassword/check-email?email=$credentials'),
+        Uri.parse('$baseUrl/forgot-password/check-email?email=$credentials'),
         headers: {'Content-Type': 'application/json'},
       );
       dynamic responseObj = json.decode(response.body);
 
       return responseObj;
-    } catch (e) {}
+    } catch (e) {
+       print('$e');
+    }
   }
     sendOtpToUser(String email, String emailSubject, String emailBody) async {
    
-    String emailId = 'ammu@gmail.com';
-    String password = 'zsfzxdf';
+    String emailId = 'geethuajay@gmail.com';
+    String password = 'wjhptgnuhqbfqsyi';
     final smtpServer = gmail(emailId, password);
 
     final message = Message()

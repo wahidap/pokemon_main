@@ -2,15 +2,17 @@ import 'dart:math';
 
 import 'package:app/modules/repository/auth.service.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-part 'reset_password_event.dart';
-part 'reset_password_state.dart';
+part 'forgot_password_event.dart';
+part 'forgot_password_state.dart';
 
-class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
-  ResetPasswordBloc() : super(ResetPasswordInitial()) {
-    on<ResetPasswordEvent>((event, emit) async  {
+class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
+  ForgotPasswordBloc() : super(ForgotPasswordInitial()) {
+    on<ForgotPasswordEvent>((event, emit) async  {
 if(event is SubmitEnteredEmail){
+ 
   try {
     
     dynamic response = 
@@ -30,7 +32,7 @@ Enjoy using Pokedex.
 
   await AuthService().sendOtpToUser(event.regEmail, 'OTP to reset your password', emailContent);
            
-           emit(OtpSent());
+           emit(OtpSent(emailOtp: otp.toString()));
           }
 
           if (response['statusCode'] == 404) {
