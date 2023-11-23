@@ -103,13 +103,13 @@ class AuthService {
     }
   }
 
-  //  Future<dynamic> resendOtp(dynamic credentials) async {
-  //   dynamic response = await http.post(
-  //     Uri.parse('$baseUrl/signup/resend-otp'),
-  //     headers: {'Content-Type': 'application/json'},
-  //       body: json.encode(credentials)
-  //   );
-  //    dynamic responseObj = json.decode(response.body);
-  //   return responseObj;
-  // }
+   Future<dynamic> resendOtp(dynamic credentials) async {
+    dynamic response = await http.post(
+      Uri.parse('$baseUrl/resend-otp'),
+      headers: {'Content-Type': 'application/json'},
+        body: json.encode(credentials)
+    );
+     dynamic responseObj = json.decode(response.body);
+    return responseObj;
+  }
 }

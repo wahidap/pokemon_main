@@ -1,7 +1,10 @@
 import 'package:app/modules/emailOtp/bloc/emailotp_bloc.dart';
 import 'package:app/modules/login/login_page.dart';
+import 'package:app/modules/reset_password/reset_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:otp_text_field/otp_text_field.dart';
+import 'package:otp_text_field/style.dart';
 
 class OtpPage extends StatefulWidget {
 final String? typedOtp;
@@ -14,8 +17,9 @@ OtpPage({
 }
 
 class _OtpPageState extends State<OtpPage> {
-  TextEditingController _otpController =  TextEditingController();
+
   EmailotpBloc _emailotpBloc = EmailotpBloc();
+String emailOtp = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,11 +108,25 @@ class _OtpPageState extends State<OtpPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _textFieldOTP(first: true, last: false),
-                            _textFieldOTP(first: false, last: false),
-                            _textFieldOTP(first: false, last: false),
-                            _textFieldOTP(first: false, last: false),
-                            _textFieldOTP(first: false, last: true),
+                          OTPTextField(
+                       
+                          keyboardType: TextInputType.numberWithOptions(
+                    signed: false, decimal: false),
+                            spaceBetween: 2,
+  length: 5,
+  width: MediaQuery.of(context).size.width*0.75,
+  fieldWidth: 30,
+  onCompleted: (value) {
+    print('entered otp = $value');
+  emailOtp = value;
+  },
+  style: TextStyle(
+    fontSize: 17
+  ),
+  textFieldAlignment: MainAxisAlignment.spaceAround,
+  fieldStyle: FieldStyle.box,
+ 
+),
                           ],
                         ),
                       ),
@@ -119,7 +137,8 @@ class _OtpPageState extends State<OtpPage> {
                         builder: (context, state) {
                           return ElevatedButton(
                             onPressed: () {
-if(_otpController.text.isEmpty){
+                          
+if(emailOtp.isEmpty){
    ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.black,
@@ -127,27 +146,29 @@ if(_otpController.text.isEmpty){
                 ),
               );
 }
-if(_otpController.text != widget.typedOtp){
+else if(emailOtp != widget.typedOtp){
    ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.black,
-                  content: Center(child: Text('Please enter a valid otp')),
+                  content: Center(child: Text('Otp doesnot match')),
                 ),
               );
 }
-if(_otpController.text == widget.typedOtp){
+else if(emailOtp== widget.typedOtp){
    ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  backgroundColor: Colors.black,
-                  content: Center(child: Text('Please enter a valid otp')),
+                  backgroundColor: Colors.green,
+                  content: Center(child: Text('Otp verification success')),
                 ),
               );
+              Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Re()
+                  
+                    ),);
 }
-        //  Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //               builder: (context) => PasswordResetScreen(email: userEmail,),
-        //             ),);
+         
                             },
                             style: ButtonStyle(
                               foregroundColor: MaterialStateProperty.all<Color>(
@@ -215,46 +236,5 @@ if(_otpController.text == widget.typedOtp){
     );
   }
 
-  Widget _textFieldOTP({bool? first, last}) {
-    return Container(
-      height: 60, // Adjust the height as needed
-      child: AspectRatio(
-        aspectRatio: 1.0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              vertical: 5, horizontal: 4), // Add vertical padding
-          child: TextField(
-            controller: _otpController,
-            autofocus: true,
-            onChanged: (value) {
-              if (value.length == 1 && last == false) {
-                FocusScope.of(context as BuildContext).nextFocus();
-              }
-              if (value.length == 0 && first == false) {
-                FocusScope.of(context as BuildContext).previousFocus();
-              }
-            },
-            showCursor: true,
-            readOnly: false,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            decoration: InputDecoration(
-              counter: Offstage(),
-              contentPadding: EdgeInsets.zero, // Remove default content padding
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.black),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.black),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+ 
 }
