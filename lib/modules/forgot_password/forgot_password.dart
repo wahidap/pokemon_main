@@ -1,139 +1,116 @@
 import 'package:app/modules/emailOtp/emailOtp_page.dart';
 import 'package:app/modules/forgot_password/bloc/bloc/forgot_password_bloc.dart';
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 
-class ForgotPassword extends StatelessWidget {
-  ForgotPassword({super.key});
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
-    TextEditingController _emailController = TextEditingController();
+  @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  TextEditingController _emailController = TextEditingController();
+  ForgotPasswordBloc _forgotPasswordBloc = ForgotPasswordBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-      ),
+      backgroundColor: Colors.white,
       body: BlocProvider(
-        create: (context) => ForgotPasswordBloc(),
+        create: (context) => _forgotPasswordBloc,
         child: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
           listener: (context, state) {
-          if(state is OtpSent){
-            ScaffoldMessenger.of(context).showSnackBar(
+            if (state is OtpSent) {
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.green,
-                  content:
-                      Center(child: Text('OTP has been sent to your registered email.')),
-                ),
-            );
-             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OtpPage(
-                    typedOtp: state.emailOtp,
-                  )
+                  content: Center(
+                      child:
+                          Text('OTP has been sent to your registered email.')),
                 ),
               );
-          }
-          
-                 if(state is EmailNotFound){
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OtpPage(
+                      typedOtp: state.emailOtp,
+                    )
+                  ),
+                );
+            }
+
+            if (state is EmailNotFound) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.red,
-                  content:
-                      Center(child: Text('Email not found')),
+                  content: Center(child: Text('Email not found')),
                 ),
               );
             }
           },
           builder: (context, state) {
             return SingleChildScrollView(
-              child: Stack(
-                children: [
-                  Lottie.asset(
-                    'assets/lotties/pokemonball.json',
-                    fit: BoxFit.contain,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 210,
-                        ),
-                        Container(
-                          child: Text(
-                            'Reset Password',
+              padding: const EdgeInsets.only(bottom: 16, top: 25),
+              child: Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Image.asset(
+                      "assets/images/fire.png",
+                      width: 250,
+                      height: 250,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Forgot Password',
                             style: TextStyle(
-                                fontSize: 33,
-                                height: 2,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Text('Please create a new password for your account'),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: TextFormField(
-                            controller: _emailController,
-                           
-                            style: TextStyle(fontSize: 12),
-                            decoration: InputDecoration(
-                              labelText: "Registered email address",
-                              labelStyle: TextStyle(
-                                  color: Colors.red), // Set label text color
-                              hintText: "Enter your registered email address",
-                              suffixIcon: Container(
-                                // Wrap the Icon with a Container
-                                child: Icon(
-                                  Icons.email_outlined,
-                                  color: Color.fromARGB(255, 101, 101,
-                                      101), // Set the desired icon color
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 1.0,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 1.0,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 16,
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
+                          Text(
+                            "Enter your Email to Reset Password",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black38,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 25),
+                      child: TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.black,
+                          ),
                         ),
-                       SizedBox(
-                        height: 30,
-                       ),
-                        Container(
-                          child: SizedBox(
-                            width: 150,
-                            child: BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
-                              builder: (context, state) {
-                                return TextButton(
-                                  onPressed: () {
-                                   
-                                     if(_emailController.text.isEmpty){
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 25),
+                      child: BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
+                        builder: (context, state) {
+                          return ElevatedButton(
+                            onPressed: () {
+                          if(_emailController.text.isEmpty){
                                        ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                 
@@ -146,28 +123,42 @@ class ForgotPassword extends StatelessWidget {
                                     regEmail: _emailController.text,
                                     
                                  ));
-                                  },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor:
-                                        Color.fromRGBO(236, 31, 52, 0.612),
-                                    padding: EdgeInsets.all(16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Reset',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                );
-                              },
+                            },
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.black),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.orangeAccent),
+                              shape: MaterialStateProperty.all<OutlinedBorder>(
+                                ContinuousRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24.0),
+                                  side: BorderSide(
+                                      color: Colors
+                                          .black), // You can set the border color as needed
+                                ),
+                              ),
+                              overlayColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed)) {
+                                  return Colors.orangeAccent.withOpacity(0.5);
+                                }
+                                return Colors.transparent;
+                              }),
                             ),
-                          ),
-                        ),
-                      ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: Text(
+                                'Reset Password',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
