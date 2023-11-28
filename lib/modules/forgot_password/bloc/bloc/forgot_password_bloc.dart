@@ -33,6 +33,7 @@ Enjoy using Pokedex.
   await AuthService().sendOtpToUser(event.regEmail, 'OTP to reset your password', emailContent);
            
            emit(OtpSent(emailOtp: otp.toString()));
+           print('otp in forgot bloc === ${otp.toString()}');
           }
 
           if (response['statusCode'] == 404) {

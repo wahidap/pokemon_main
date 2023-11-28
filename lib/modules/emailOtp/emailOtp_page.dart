@@ -1,5 +1,6 @@
 import 'package:app/modules/emailOtp/bloc/emailotp_bloc.dart';
 import 'package:app/modules/login/login_page.dart';
+import 'package:app/modules/resend_otp_bloc/resend_otp_bloc.dart';
 import 'package:app/modules/reset_password/reset_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,47 +9,91 @@ import 'package:otp_text_field/style.dart';
 
 class OtpPage extends StatefulWidget {
   final String? typedOtp;
-  OtpPage({this.typedOtp});
+  final String? userEmailId;
+  final bool? isResendOtp;
+  OtpPage({this.typedOtp,this.userEmailId,this.isResendOtp});
 
   @override
   State<OtpPage> createState() => _OtpPageState();
 }
 
 class _OtpPageState extends State<OtpPage> {
+  
   EmailotpBloc _emailotpBloc = EmailotpBloc();
+  ResendOtpBloc _resendOtpBloc = ResendOtpBloc();
+  String resetBlocOtp = '';
+
   String emailOtp = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body: BlocProvider(
-        create: (context) => _emailotpBloc,
-        child: BlocConsumer<EmailotpBloc, EmailotpState>(
-          listener: (context, state) {
-            if (state is VerificationSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
+      body: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => _emailotpBloc,
+            ),
+            BlocProvider(
+              create: (context) => _resendOtpBloc,
+            ),
+          ],
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<EmailotpBloc, EmailotpState>(
+                listener: (context, state) {
+                  if (state is VerificationSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Center(child: Text('Verification success')),
+                      ),
+                    );
+                  }
+                  if (state is VerificationFailed) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Center(child: Text('Invalid Otp')),
+                      ),
+                    );
+                  }
+                },
+              ),
+              BlocListener<ResendOtpBloc, ResendOtpState>(
+                listener: (context, state) {
+                  if (state is ResendOtpSent) {
+                    ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.green,
-                  content: Center(child: Text('OTP verification success.')),
+                  content: Center(
+                      child:
+                          Text('New OTP has been sent to your registered email.')),
                 ),
               );
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            }
-            if (state is VerificationFailed) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.red,
-                  content: Center(child: Text('Invalid OTP.')),
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            return SingleChildScrollView(
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OtpPage(
+                      typedOtp:state.newOtp ,
+                      userEmailId:widget.userEmailId,
+                      isResendOtp: true,
+                    )
+                  ),
+                );
+                  }
+                  if (state is ResendOtpFailed) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Center(child: Text('Otp sending failed')),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+            child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 24, horizontal: 32),
                 child: Column(
@@ -108,7 +153,8 @@ class _OtpPageState extends State<OtpPage> {
                             width: MediaQuery.of(context).size.width * 0.75,
                             fieldWidth: 45,
                             onCompleted: (value) {
-                              print('Enterd otp=$value');
+                            
+                              emailOtp = value;
                             },
                             style: TextStyle(fontSize: 17),
                             textFieldAlignment: MainAxisAlignment.spaceAround,
@@ -122,9 +168,12 @@ class _OtpPageState extends State<OtpPage> {
                     ),
                     BlocBuilder<EmailotpBloc, EmailotpState>(
                       builder: (context, state) {
-                        validateOtp(emailOtp?? '', context);
                         return ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            print('***** sentedotp = ${widget.typedOtp}');
+                              print('Enterd otp====== $emailOtp');
+                            validateOtp(emailOtp, context);
+                          },
                           style: ButtonStyle(
                             foregroundColor:
                                 MaterialStateProperty.all<Color>(Colors.black),
@@ -170,21 +219,26 @@ class _OtpPageState extends State<OtpPage> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        TextButton(
-                            onPressed: () {},
-                            child: Text('Resend OTP',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold))),
+                        BlocBuilder<ResendOtpBloc, ResendOtpState>(
+                          builder: (context, state) {
+                            return TextButton(
+                                onPressed: () {
+                                 
+                                  context.read<ResendOtpBloc>().add(ResendOtp(userEmail: widget.userEmailId ?? '' ));
+                                },
+                                child: Text('Resend OTP',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold)));
+                          },
+                        ),
                       ],
                     )
                   ],
                 ),
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          )),
     );
   }
 
@@ -217,6 +271,7 @@ class _OtpPageState extends State<OtpPage> {
   }
 
   validateOtp(String otp, BuildContext context) {
+    print('dsfzdddzx$otp');
     if (otp.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -224,14 +279,18 @@ class _OtpPageState extends State<OtpPage> {
           content: Center(child: Text('Please enter the otp')),
         ),
       );
-    } else if (otp != widget.typedOtp) {
+    } 
+    else if (otp != widget.typedOtp) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.black,
           content: Center(child: Text('Otp doesnot match')),
         ),
       );
-    } else if (otp == widget.typedOtp) {
+      
+    } 
+      
+    else if (otp == widget.typedOtp) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
@@ -240,7 +299,9 @@ class _OtpPageState extends State<OtpPage> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Re()),
+        MaterialPageRoute(
+          builder: (context) => RsestPasswordPage(),
+        ),
       );
     }
   }

@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                               padding: EdgeInsets.only(bottom: 17),
                               child: TextFormField(
                                 controller: _passwordController,
-                                keyboardType: TextInputType.visiblePassword,
+                               obscureText: true,
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   border: OutlineInputBorder(),
@@ -136,7 +136,8 @@ class _LoginPageState extends State<LoginPage> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => ForgotPasswordPage(),
+                                            builder: (context) =>
+                                                ForgotPasswordPage(),
                                           ));
                                     },
                                     child: Text(
@@ -154,53 +155,51 @@ class _LoginPageState extends State<LoginPage> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.only(),
                                   ),
-                                  child: BlocProvider(
-                                    create: (context) => LoginBloc(),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                       
-validateLoginDetails(
- _emailController.text,
-   _passwordController.text,
-   context
-);
-
-                                      },
-                                      style: ButtonStyle(
-                                        foregroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.black),
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.orangeAccent),
-                                        shape: MaterialStateProperty.all<
-                                            OutlinedBorder>(
-                                          ContinuousRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(24.0),
-                                            side: BorderSide(
-                                                color: Colors
-                                                    .black), // You can set the border color as needed
+                                  child: BlocBuilder<LoginBloc, LoginState>(
+                                    builder: (context, state) {
+                                      return ElevatedButton(
+                                        onPressed: () {
+                                          validateLoginDetails(
+                                              _emailController.text,
+                                              _passwordController.text,
+                                              context);
+                                        },
+                                        style: ButtonStyle(
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black),
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.orangeAccent),
+                                          shape: MaterialStateProperty.all<
+                                              OutlinedBorder>(
+                                            ContinuousRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(24.0),
+                                              side: BorderSide(
+                                                  color: Colors
+                                                      .black), // You can set the border color as needed
+                                            ),
+                                          ),
+                                          overlayColor: MaterialStateProperty
+                                              .resolveWith<Color>((states) {
+                                            if (states.contains(
+                                                MaterialState.pressed)) {
+                                              return Colors.orangeAccent
+                                                  .withOpacity(0.5);
+                                            }
+                                            return Colors.transparent;
+                                          }),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(14.0),
+                                          child: Text(
+                                            'Login',
+                                            style: TextStyle(fontSize: 16),
                                           ),
                                         ),
-                                        overlayColor: MaterialStateProperty
-                                            .resolveWith<Color>((states) {
-                                          if (states.contains(
-                                              MaterialState.pressed)) {
-                                            return Colors.orangeAccent
-                                                .withOpacity(0.5);
-                                          }
-                                          return Colors.transparent;
-                                        }),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(14.0),
-                                        child: Text(
-                                          'Login',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
@@ -251,28 +250,24 @@ validateLoginDetails(
       ),
     );
   }
-  validateLoginDetails(String loginEmail,String loginPassword,BuildContext context){
+
+  validateLoginDetails(
+      String loginEmail, String loginPassword, BuildContext context) {
     print('jdnjddn$loginEmail');
-     if(loginEmail.isEmpty){
-                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please enter an email')));
-                                        }
-                                        else  if(loginPassword.isEmpty){
-                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Please enter a password')));
-                                        }
-                                      if (loginEmail.isEmpty &&
-                                          loginPassword.isEmpty) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    'Please enter your email and password.')));
-                                      }
-                                      else {
-                                        context.read<LoginBloc>().add(UserLogin(
-                                          loginEmail: loginEmail,
-                                          loginPassword:loginPassword)
-                                              );
-                                      }
+    if (loginEmail.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter an email')));
+    } else if (loginPassword.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter a password')));
+    }
+    if (loginEmail.isEmpty && loginPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please enter your email and password.')));
+    } else {
+      context
+          .read<LoginBloc>()
+          .add(UserLogin(loginEmail: loginEmail, loginPassword: loginPassword));
+    }
   }
 }

@@ -35,6 +35,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   MaterialPageRoute(
                     builder: (context) => OtpPage(
                       typedOtp: state.emailOtp,
+                      userEmailId: _emailController.text,
+                      isResendOtp: false,
                     )
                   ),
                 );
