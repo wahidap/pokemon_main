@@ -22,7 +22,6 @@ class _OtpPageState extends State<OtpPage> {
   EmailotpBloc _emailotpBloc = EmailotpBloc();
   ResendOtpBloc _resendOtpBloc = ResendOtpBloc();
   String resetBlocOtp = '';
-
   String emailOtp = '';
   @override
   Widget build(BuildContext context) {
@@ -82,6 +81,7 @@ class _OtpPageState extends State<OtpPage> {
                   ),
                 );
                   }
+                  // moves to otp page
                   if (state is ResendOtpFailed) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
