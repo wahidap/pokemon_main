@@ -24,6 +24,8 @@ class _LoginPageState extends State<LoginPage> {
         child: BlocConsumer<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state is LoginSuccess) {
+               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Login success.'),backgroundColor: Colors.green,));
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -33,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
             }
             if (state is LoginFailed) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Login failed. Please try again later.')));
+                  content: Text('Login failed. Please try again later.'),backgroundColor: Colors.red,));
             }
           },
           builder: (context, state) {

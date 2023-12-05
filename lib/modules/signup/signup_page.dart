@@ -27,6 +27,9 @@ class _SignupPageState extends State<SignupPage> {
         child: BlocConsumer<SignupBloc, SignupState>(
           listener: (context, state) {
             if (state is SignupSuccess) {
+               ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Sign up successfull.'),
+                  backgroundColor: Colors.green,));
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
@@ -34,11 +37,13 @@ class _SignupPageState extends State<SignupPage> {
             }
             if (state is EmailExisting) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('This email already exist.')));
+                  SnackBar(content: Text('This email already exist.'),
+                  backgroundColor: Colors.orange,));
             }
             if (state is SignupFailed) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Signup failed. Please try again later')));
+                  content: Text('Signup failed. Please try again later'),
+                  backgroundColor: Colors.red,));
             }
           },
           builder: (context, state) {
