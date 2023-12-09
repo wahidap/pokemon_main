@@ -32,7 +32,7 @@ class _SignupPageState extends State<SignupPage> {
                   backgroundColor: Colors.green,));
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => HomePage(userEmailid: _userEmailController.text,)),
               );
             }
             if (state is EmailExisting) {

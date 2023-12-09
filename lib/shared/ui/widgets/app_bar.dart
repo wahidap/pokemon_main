@@ -1,3 +1,4 @@
+import 'package:app/modules/profile_details/profile_details_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -10,8 +11,9 @@ import '../enums/device_screen_type.dart';
 class AppBarWidget extends StatefulWidget {
   final String title;
   final String? lottiePath;
+  final String? userEmail;
 
-  const AppBarWidget({Key? key, required this.title, this.lottiePath})
+  const AppBarWidget({Key? key, required this.title, this.lottiePath,this.userEmail})
       : super(key: key);
 
   @override
@@ -41,6 +43,12 @@ class _AppBarWidgetState extends State<AppBarWidget> {
             icon: Icon(Icons.menu,
                 color: AppTheme.getColors(context).appBarButtons),
           ),
+        ),
+        Padding(
+         padding: EdgeInsets.only(top: 20,left: 5),
+          child: IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileDetailsPage(emailId: widget.userEmail),));
+          }, icon: Icon(Icons.person,color: Colors.black,)),
         )
       ],
       flexibleSpace: Stack(children: [

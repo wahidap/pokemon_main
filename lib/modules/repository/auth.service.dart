@@ -118,4 +118,16 @@ class AuthService {
    }
     
   }
+  Future<dynamic> fetchUserDetails(String userEmailId) async{
+    try {
+      dynamic response = await http.get(Uri.parse('$baseUrl/fetch-profile_details?email=$userEmailId'),
+       headers: {'Content-Type': 'application/json'},
+       
+       );
+       dynamic responseObj = json.decode(response.body);
+      return responseObj;
+    } catch (e) {
+     print('$e');  
+    }
+  }
 }

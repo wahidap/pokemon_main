@@ -15,7 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  final String? userEmailid;
+  HomePage({Key? key, this.userEmailid}): super(key: key);
+
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -40,7 +42,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
+print('92828252545${widget.userEmailid}');
     _pokemonStore = GetIt.instance<PokemonStore>();
     _itemStore = GetIt.instance<ItemStore>();
     _homeStore = GetIt.instance<HomePageStore>();
@@ -131,6 +133,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       builder: (_) => AppBarWidget(
                         title: _homeStore.page.description,
                         lottiePath: AppConstants.squirtleLottie,
+                        userEmail: widget.userEmailid,
                       ),
                     ),
                   ),
